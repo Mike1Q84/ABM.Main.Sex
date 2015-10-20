@@ -14,7 +14,7 @@ hosts-own [
   g-array ;; defense to virus
   b-array ;; adaptive to environment changes
   rgb-list
-  
+
   energy
   age
   sexual?         ;; indicate whether the host reproduce sexually or asexually
@@ -34,7 +34,7 @@ virus-own [
 
 to setup
   clear-all
-  
+
   setup-counts
   setup-global
   setup-patches
@@ -57,7 +57,7 @@ end
 to setup-patches
 ;  ask patches [set n-array array:from-list (n-values 8 [random 2])]
   ask patches [set n-array global-array]
-  ask patches [set n-list (list 
+  ask patches [set n-list (list
     (0)
     (0)
     ((array:item n-array 0) * (2 ^ 7)
@@ -79,31 +79,31 @@ to setup-hosts
   ask hosts [set r-array array:from-list (n-values 8 [random 2])]
   ask hosts [set g-array array:from-list (n-values 8 [random 2])]
   ask hosts [set b-array array:from-list (n-values 8 [random 2])]
-  ask hosts [set rgb-list (list 
-    ((array:item r-array 0) * (2 ^ 7) 
+  ask hosts [set rgb-list (list
+    ((array:item r-array 0) * (2 ^ 7)
     +(array:item r-array 1) * (2 ^ 6)
     +(array:item r-array 2) * (2 ^ 5)
     +(array:item r-array 3) * (2 ^ 4)
     +(array:item r-array 4) * (2 ^ 3)
     +(array:item r-array 5) * (2 ^ 2)
     +(array:item r-array 6) * (2 ^ 1)
-    +(array:item r-array 7) * (2 ^ 0)) 
-    ((array:item g-array 0) * (2 ^ 7) 
+    +(array:item r-array 7) * (2 ^ 0))
+    ((array:item g-array 0) * (2 ^ 7)
     +(array:item g-array 1) * (2 ^ 6)
     +(array:item g-array 2) * (2 ^ 5)
     +(array:item g-array 3) * (2 ^ 4)
     +(array:item g-array 4) * (2 ^ 3)
     +(array:item g-array 5) * (2 ^ 2)
     +(array:item g-array 6) * (2 ^ 1)
-    +(array:item g-array 7) * (2 ^ 0)) 
-    ((array:item b-array 0) * (2 ^ 7) 
+    +(array:item g-array 7) * (2 ^ 0))
+    ((array:item b-array 0) * (2 ^ 7)
     +(array:item b-array 1) * (2 ^ 6)
     +(array:item b-array 2) * (2 ^ 5)
     +(array:item b-array 3) * (2 ^ 4)
     +(array:item b-array 4) * (2 ^ 3)
     +(array:item b-array 5) * (2 ^ 2)
     +(array:item b-array 6) * (2 ^ 1)
-    +(array:item b-array 7) * (2 ^ 0)) 
+    +(array:item b-array 7) * (2 ^ 0))
     )
   ]
   ask hosts [set color rgb-list]
@@ -111,9 +111,9 @@ to setup-hosts
   ask hosts [set energy random host-birth-energy]
   ask hosts [set sexual? one-of [true false]]
   ask hosts [set no-partner? one-of [true false]]
-  ask hosts 
+  ask hosts
   [
-    ifelse sexual? 
+    ifelse sexual?
     [
       set shape "square"
     ]
@@ -131,17 +131,17 @@ to setup-virus
 ;  ask virus [set infected one-of hosts]
 ;  ask virus [setxy ([xcor] of infected) ([ycor] of infected)]
   ask virus [set g-array array:from-list (n-values 8 [random 2])]
-  ask virus [set rgb-list (list 
-    (0) 
-    ((array:item g-array 0) * (2 ^ 7) 
+  ask virus [set rgb-list (list
+    (0)
+    ((array:item g-array 0) * (2 ^ 7)
     +(array:item g-array 1) * (2 ^ 6)
     +(array:item g-array 2) * (2 ^ 5)
     +(array:item g-array 3) * (2 ^ 4)
     +(array:item g-array 4) * (2 ^ 3)
     +(array:item g-array 5) * (2 ^ 2)
     +(array:item g-array 6) * (2 ^ 1)
-    +(array:item g-array 7) * (2 ^ 0)) 
-    (0) 
+    +(array:item g-array 7) * (2 ^ 0))
+    (0)
     )
   ]
   ask virus [set color rgb-list]
@@ -151,11 +151,11 @@ end
 
 to go
   go-counts
-  
+
   go-global
   go-patches
   go-hosts
-  
+
   ifelse switch-virus
   [
     if count virus = 0 [setup-virus]
@@ -164,7 +164,7 @@ to go
   [
     ask virus [die]
   ]
-  
+
   tick
 end
 
@@ -177,13 +177,13 @@ to go-hosts
   ask hosts [
     set age age + 1
     if age > lifespan [ die ]
-    
+
     set heading towards one-of patches
     forward host-move-speed
-    
+
     set energy energy - host-move-cost
     if energy <= 0 [die]
-    
+
     let conversion-rate 1 - (
             abs((array:item b-array 0) - (array:item n-array 0))
           + abs((array:item b-array 1) - (array:item n-array 1))
@@ -206,7 +206,7 @@ to go-hosts
         set energy energy + supply * conversion-rate
       ]
     ]
-    
+
     if energy > host-birth-energy [
       ifelse sexual-prob > random-float 1.00
       [
@@ -217,7 +217,7 @@ to go-hosts
         set sexual? false
         set shape "circle 2"
       ]
-      ifelse sexual? 
+      ifelse sexual?
       [
         set partner one-of other hosts in-radius radius with [sexual?] with [no-partner?] with [energy > host-birth-energy]
         if partner != NOBODY [
@@ -279,34 +279,34 @@ to go-hosts
 ;              array:set b-array 5 one-of(list (array:item b-array 5) (array:item ([b-array] of partner) 5))
 ;              array:set b-array 6 one-of(list (array:item b-array 6) (array:item ([b-array] of partner) 6))
 ;              array:set b-array 7 one-of(list (array:item b-array 7) (array:item ([b-array] of partner) 7))
-              set rgb-list (list 
-                ((array:item r-array 0) * (2 ^ 7) 
+              set rgb-list (list
+                ((array:item r-array 0) * (2 ^ 7)
                 +(array:item r-array 1) * (2 ^ 6)
                 +(array:item r-array 2) * (2 ^ 5)
                 +(array:item r-array 3) * (2 ^ 4)
                 +(array:item r-array 4) * (2 ^ 3)
                 +(array:item r-array 5) * (2 ^ 2)
                 +(array:item r-array 6) * (2 ^ 1)
-                +(array:item r-array 7) * (2 ^ 0)) 
-                ((array:item g-array 0) * (2 ^ 7) 
+                +(array:item r-array 7) * (2 ^ 0))
+                ((array:item g-array 0) * (2 ^ 7)
                 +(array:item g-array 1) * (2 ^ 6)
                 +(array:item g-array 2) * (2 ^ 5)
                 +(array:item g-array 3) * (2 ^ 4)
                 +(array:item g-array 4) * (2 ^ 3)
                 +(array:item g-array 5) * (2 ^ 2)
                 +(array:item g-array 6) * (2 ^ 1)
-                +(array:item g-array 7) * (2 ^ 0)) 
-                ((array:item b-array 0) * (2 ^ 7) 
+                +(array:item g-array 7) * (2 ^ 0))
+                ((array:item b-array 0) * (2 ^ 7)
                 +(array:item b-array 1) * (2 ^ 6)
                 +(array:item b-array 2) * (2 ^ 5)
                 +(array:item b-array 3) * (2 ^ 4)
                 +(array:item b-array 4) * (2 ^ 3)
                 +(array:item b-array 5) * (2 ^ 2)
                 +(array:item b-array 6) * (2 ^ 1)
-                +(array:item b-array 7) * (2 ^ 0)) 
+                +(array:item b-array 7) * (2 ^ 0))
               )
               set color rgb-list
-              
+
               set energy (host-birth-energy + [host-birth-energy] of partner) / 2 ;; * 2
               set age 0
               set sexual? true
@@ -366,34 +366,34 @@ to go-hosts
 ;          array:set b-array 5 (array:item b-array 5)
 ;          array:set b-array 6 (array:item b-array 6)
 ;          array:set b-array 7 (array:item b-array 7)
-          set rgb-list (list 
-            ((array:item r-array 0) * (2 ^ 7) 
+          set rgb-list (list
+            ((array:item r-array 0) * (2 ^ 7)
             +(array:item r-array 1) * (2 ^ 6)
             +(array:item r-array 2) * (2 ^ 5)
             +(array:item r-array 3) * (2 ^ 4)
             +(array:item r-array 4) * (2 ^ 3)
             +(array:item r-array 5) * (2 ^ 2)
             +(array:item r-array 6) * (2 ^ 1)
-            +(array:item r-array 7) * (2 ^ 0)) 
-            ((array:item g-array 0) * (2 ^ 7) 
+            +(array:item r-array 7) * (2 ^ 0))
+            ((array:item g-array 0) * (2 ^ 7)
             +(array:item g-array 1) * (2 ^ 6)
             +(array:item g-array 2) * (2 ^ 5)
             +(array:item g-array 3) * (2 ^ 4)
             +(array:item g-array 4) * (2 ^ 3)
             +(array:item g-array 5) * (2 ^ 2)
             +(array:item g-array 6) * (2 ^ 1)
-            +(array:item g-array 7) * (2 ^ 0)) 
-            ((array:item b-array 0) * (2 ^ 7) 
+            +(array:item g-array 7) * (2 ^ 0))
+            ((array:item b-array 0) * (2 ^ 7)
             +(array:item b-array 1) * (2 ^ 6)
             +(array:item b-array 2) * (2 ^ 5)
             +(array:item b-array 3) * (2 ^ 4)
             +(array:item b-array 4) * (2 ^ 3)
             +(array:item b-array 5) * (2 ^ 2)
             +(array:item b-array 6) * (2 ^ 1)
-            +(array:item b-array 7) * (2 ^ 0)) 
+            +(array:item b-array 7) * (2 ^ 0))
           )
           set color rgb-list
-              
+
           set energy host-birth-energy
           set age 0
           set sexual? false
@@ -404,7 +404,7 @@ to go-hosts
           if (random-float 100.0 < mutation-rate) [
             set sexual-prob random-float 1.00
           ]
-          
+
           set no-partner? true
         ]
       ]
@@ -413,24 +413,24 @@ to go-hosts
 end
 
 to go-virus
-;  ifelse switch-virus 
+;  ifelse switch-virus
 ;  [
     ask virus [
       if (infected = NOBODY) [set age age + 1]
       if age > viru-lifespan [die]
-      
+
 ;      if (infected = NOBODY)
 ;      [
 ;        set heading towards one-of hosts
 ;        forward virus-move-speed
 ;      ]
 ;      set energy energy - 1
-      
+
       if (infected = NOBODY) [set infected one-of hosts-here]
-      
-      if (infected != NOBODY) [ 
+
+      if (infected != NOBODY) [
         setxy ([xcor] of infected) ([ycor] of infected)
-        let susceptibility (
+        let infectiousness 1 - (
           abs((array:item g-array 0) - (array:item ([g-array] of infected) 0))
         + abs((array:item g-array 1) - (array:item ([g-array] of infected) 1))
         + abs((array:item g-array 2) - (array:item ([g-array] of infected) 2))
@@ -440,7 +440,7 @@ to go-virus
         + abs((array:item g-array 6) - (array:item ([g-array] of infected) 6))
         + abs((array:item g-array 7) - (array:item ([g-array] of infected) 7))
         ) / 8
-        let energy-wanted (energy-from-host * susceptibility)
+        let energy-wanted (energy-from-host * infectiousness)
         ifelse (energy-wanted >= ([energy] of infected))
         [
           set energy (energy + [energy] of infected)
@@ -464,22 +464,22 @@ to go-virus
               array:set g-array ? (1 - array:item g-array ?)
             ]
           ]
-          set rgb-list (list 
-            (0) 
-            ((array:item g-array 0) * (2 ^ 7) 
+          set rgb-list (list
+            (0)
+            ((array:item g-array 0) * (2 ^ 7)
             +(array:item g-array 1) * (2 ^ 6)
             +(array:item g-array 2) * (2 ^ 5)
             +(array:item g-array 3) * (2 ^ 4)
             +(array:item g-array 4) * (2 ^ 3)
             +(array:item g-array 5) * (2 ^ 2)
             +(array:item g-array 6) * (2 ^ 1)
-            +(array:item g-array 7) * (2 ^ 0)) 
-            (0) 
+            +(array:item g-array 7) * (2 ^ 0))
+            (0)
             )
           set color rgb-list
         ]
       ]
-;      if energy <= 0 
+;      if energy <= 0
 ;      [
 ;        hatch 1 [
 ;          set energy viru-birth-energy
@@ -492,17 +492,17 @@ to go-virus
 ;              array:set g-array ? (1 - array:item g-array ?)
 ;            ]
 ;          ]
-;          set rgb-list (list 
-;            (0) 
-;            ((array:item g-array 0) * (2 ^ 7) 
+;          set rgb-list (list
+;            (0)
+;            ((array:item g-array 0) * (2 ^ 7)
 ;            +(array:item g-array 1) * (2 ^ 6)
 ;            +(array:item g-array 2) * (2 ^ 5)
 ;            +(array:item g-array 3) * (2 ^ 4)
 ;            +(array:item g-array 4) * (2 ^ 3)
 ;            +(array:item g-array 5) * (2 ^ 2)
 ;            +(array:item g-array 6) * (2 ^ 1)
-;            +(array:item g-array 7) * (2 ^ 0)) 
-;            (0) 
+;            +(array:item g-array 7) * (2 ^ 0))
+;            (0)
 ;            )
 ;          set color rgb-list
 ;        ]
@@ -521,17 +521,17 @@ to go-virus
 ;              array:set g-array ? (1 - array:item g-array ?)
 ;            ]
 ;          ]
-;          set rgb-list (list 
-;            (0) 
-;            ((array:item g-array 0) * (2 ^ 7) 
+;          set rgb-list (list
+;            (0)
+;            ((array:item g-array 0) * (2 ^ 7)
 ;            +(array:item g-array 1) * (2 ^ 6)
 ;            +(array:item g-array 2) * (2 ^ 5)
 ;            +(array:item g-array 3) * (2 ^ 4)
 ;            +(array:item g-array 4) * (2 ^ 3)
 ;            +(array:item g-array 5) * (2 ^ 2)
 ;            +(array:item g-array 6) * (2 ^ 1)
-;            +(array:item g-array 7) * (2 ^ 0)) 
-;            (0) 
+;            +(array:item g-array 7) * (2 ^ 0))
+;            (0)
 ;            )
 ;          set color rgb-list
 ;        ]
@@ -560,7 +560,7 @@ to go-patches
 ;      ]
 ;    ]
     set n-array global-array
-    set n-list (list 
+    set n-list (list
       (0)
       (0)
       (  (array:item n-array 0) * (2 ^ 7)
@@ -582,8 +582,8 @@ end
 GRAPHICS-WINDOW
 570
 10
-1480
-941
+937
+393
 -1
 -1
 18.0
@@ -597,8 +597,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-49
--49
+19
+-19
 0
 1
 1
@@ -699,7 +699,7 @@ energy-from-host
 energy-from-host
 0
 100
-15
+10
 1
 1
 NIL
@@ -929,7 +929,7 @@ SWITCH
 180
 switch-virus
 switch-virus
-1
+0
 1
 -1000
 
@@ -942,8 +942,8 @@ mutation-rate
 mutation-rate
 0
 100
-0.5
-0.1
+5
+1
 1
 NIL
 HORIZONTAL
@@ -1018,7 +1018,7 @@ rapidity
 0
 100
 30
-0.1
+1
 1
 NIL
 HORIZONTAL
@@ -1041,14 +1041,14 @@ HORIZONTAL
 SLIDER
 359
 113
-532
-146
+571
+147
 relationship-threshold
 relationship-threshold
 0
 1
-1
-0.01
+0
+0.2
 1
 NIL
 HORIZONTAL
@@ -1411,7 +1411,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1547,7 +1547,7 @@ NetLogo 5.2.0
       <value value="3"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="021.001" repetitions="1" runMetricsEveryStep="true">
+  <experiment name="022" repetitions="1" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="1500"/>
@@ -1558,8 +1558,7 @@ NetLogo 5.2.0
       <value value="true"/>
       <value value="false"/>
     </enumeratedValueSet>
-    <steppedValueSet variable="rapidity" first="0" step="10" last="30"/>
-    <steppedValueSet variable="mutation-rate" first="0" step="0.5" last="5"/>
+    <steppedValueSet variable="rapidity" first="0" step="20" last="100"/>
   </experiment>
 </experiments>
 @#$#@#$#@
